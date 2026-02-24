@@ -32,10 +32,10 @@ body {
 
 <script>
 
-// Create map centred on City of London
+// Create map centred on City
 const map = L.map('map').setView([51.5096, -0.08227], 14);
 
-// Add map tiles
+// Map tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
  attribution: '© OpenStreetMap contributors'
 }).addTo(map);
@@ -54,10 +54,18 @@ const locations = [
 
 {
   title: "Tower 42",
-  coords: [51.5153, -0.0821],
+  coords: [51.51532, -0.08443],
   article: "https://open.substack.com/pub/tracinglondon/p/tower-42?r=1undwi&utm_medium=ios",
   video: null,
   description: "Once Britain's tallest building, rising from the financial heart of the City."
+},
+
+{
+  title: "Philpot Lane",
+  coords: [51.51079, -0.08424],
+  article: "",
+  video: null,
+  description: "Site of the famous Philpot Lane mice."
 },
 
 {
@@ -91,13 +99,16 @@ locations.forEach(place => {
     popupContent += `<em>Video coming soon</em><br>`;
   }
 
-  popupContent += `
+  if (place.article) {
+    popupContent += `
       <br>
       <a href="${place.article}" target="_blank">
         Read the full story
       </a>
-    </div>
-  `;
+    `;
+  }
+
+  popupContent += `</div>`;
 
   L.marker(place.coords)
     .addTo(map)
