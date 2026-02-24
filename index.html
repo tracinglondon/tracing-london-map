@@ -8,7 +8,19 @@
 href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
-#map { height: 100vh; }
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#map {
+  height: 100vh;
+  width: 100%;
+}
+
+.popup-content {
+  font-size: 14px;
+}
 </style>
 </head>
 
@@ -19,20 +31,25 @@ href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
-const map = L.map('map').setView([51.5074, -0.1278], 13);
 
+// Create the map
+const map = L.map('map').setView([51.5106, -0.0834], 13);
+
+// Add map tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
- attribution: '© OpenStreetMap'
+ attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
+
+// LOCATION DATA
 const locations = [
-L.marker
+
 {
   title: "St Dunstan-in-the-East",
   coords: [51.5106, -0.0834],
   article: "https://open.substack.com/pub/tracinglondon/p/st-dunstan-in-the-east-a-timeless-legacy?r=1undwi&utm_medium=ios",
   video: null,
-  description: "A bombed-out Wren church transformed into a hidden garden"
+  description: "A bombed-out Wren church transformed into a hidden garden."
 },
 
 {
@@ -52,6 +69,42 @@ L.marker
 }
 
 ];
+
+
+// ADD PINS
+locations.forEach(place => {
+
+  let popupContent = `
+    <div class="popup-content">
+      <strong>${place.title}</strong><br>
+      ${place.description}<br><br>
+  `;
+
+  if (place.video) {
+    popupContent += `
+      <iframe width="250" height="140"
+      src="${place.video}"
+      frameborder="0"
+      allowfullscreen></iframe><br>
+    `;
+  } else {
+    popupContent += `<em>Video coming soon</em><br>`;
+  }
+
+  popupContent += `
+      <br>
+      <a href="${place.article}" target="_blank">
+        Read the full story
+      </a>
+    </div>
+  `;
+
+  L.marker(place.coords)
+    .addTo(map)
+    .bindPopup(popupContent);
+
+});
+
 </script>
 
 </body>
