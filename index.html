@@ -25,9 +25,33 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
  attribution: '© OpenStreetMap'
 }).addTo(map);
 
-L.marker([51.5081, -0.0759])
-.addTo(map)
-.bindPopup("<b>Tower of London</b><br>First test pin.");
+const locations = [
+
+{
+  title: "St Dunstan-in-the-East",
+  coords: [51.5106, -0.0834],
+  article: "https://open.substack.com/pub/tracinglondon/p/st-dunstan-in-the-east-a-timeless-legacy?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A bombed-out Wren church transformed into a hidden garden."
+},
+
+{
+  title: "Tower 42",
+  coords: [51.5154, -0.0820],
+  article: "https://open.substack.com/pub/tracinglondon/p/tower-42?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "Once Britain's tallest building, rising from the financial heart of the City."
+},
+
+{
+  title: "The Town of Ramsgate Pub",
+  coords: [51.5079, -0.0526],
+  article: "https://open.substack.com/pub/tracinglondon/p/the-town-of-ramsgate-pub?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A riverside pub steeped in smuggling lore and dockside history."
+}
+
+];
 </script>
 
 </body>
