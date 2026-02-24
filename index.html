@@ -32,8 +32,8 @@ body {
 
 <script>
 
-// Create the map
-const map = L.map('map').setView([51.5106, -0.0834], 13);
+// Create map centred on City of London
+const map = L.map('map').setView([51.5104, -0.0830], 14);
 
 // Add map tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -41,7 +41,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 
-// LOCATION DATA
+// LOCATIONS
 const locations = [
 
 {
