@@ -44,9 +44,23 @@ body {
   font-size: 14px;
 }
 
+.popup-content strong {
+  font-size: 16px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.popup-content em {
+  color: #7a7468;
+  font-size: 12px;
+}
+
 .popup-content a {
   color: #b8924a;
   text-decoration: none;
+  display: inline-block;
+  margin-top: 6px;
+  font-weight: 600;
 }
 
 .popup-content a:hover {
@@ -54,17 +68,22 @@ body {
 }
 
 /* Custom cluster styling */
-.marker-cluster-small,
-.marker-cluster-medium,
-.marker-cluster-large {
+.custom-cluster {
   background: rgba(184,146,74,0.2);
+  border-radius: 50%;
 }
 
-.marker-cluster div {
+.custom-cluster div {
   background: #b8924a;
   color: #1a1714;
   border: 2px solid #1a1714;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  line-height: 36px;
+  text-align: center;
   font-weight: bold;
+  font-size: 14px;
 }
 </style>
 </head>
@@ -83,13 +102,19 @@ body {
 // Create map
 const map = L.map('map', {
   maxZoom: 18
-}).setView([51.5096, -0.08227], 12);
+}).setView([51.5096, -0.08227], 13);
 
 // Map tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
  attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
+// Limit map to London area
+const londonBounds = [
+  [51.28, -0.5],
+  [51.7, 0.3]
+];
+map.setMaxBounds(londonBounds);
 
 // BIG GOLD ICON
 const goldIcon = L.divIcon({
@@ -111,8 +136,7 @@ const goldIcon = L.divIcon({
   popupAnchor: [0, -46]
 });
 
-
-// LOCATIONS (unchanged)
+// LOCATIONS
 const locations = [
 
 {
@@ -237,9 +261,18 @@ const locations = [
 
 ];
 
+// CREATE CLUSTER GROUP WITH CUSTOM ICONS
+const markers = L.markerClusterGroup({
+  iconCreateFunction: function(cluster) {
+    const count = cluster.getChildCount();
 
-// CREATE CLUSTER GROUP
-const markers = L.markerClusterGroup();
+    return L.divIcon({
+      html: `<div>${count}+</div>`,
+      className: 'custom-cluster',
+      iconSize: [40, 40]
+    });
+  }
+});
 
 // ADD MARKERS
 const bounds = [];
@@ -265,7 +298,7 @@ locations.forEach(place => {
     popupContent += `<em>Video coming soon</em><br>`;
   }
 
-  if (place.article) {
+  if (place.article && place.article.trim() !== "") {
     popupContent += `
       <br>
       <a href="${place.article}" target="_blank">
@@ -279,6 +312,11 @@ locations.forEach(place => {
   const marker = L.marker(place.coords, { icon: goldIcon })
     .bindPopup(popupContent);
 
+  // Zoom in on click
+  marker.on('click', function() {
+    map.setView(place.coords, 16, { animate: true });
+  });
+
   markers.addLayer(marker);
 
 });
@@ -286,8 +324,11 @@ locations.forEach(place => {
 // Add cluster layer
 map.addLayer(markers);
 
-// Fit map to all markers
-map.fitBounds(bounds, { padding: [50, 50] });
+// Fit map to all markers nicely
+map.fitBounds(bounds, {
+  padding: [30, 30],
+  maxZoom: 15
+});
 
 </script>
 
