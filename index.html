@@ -7,8 +7,12 @@
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
+<!-- Marker Cluster CSS -->
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
 
 <style>
 body {
@@ -24,178 +28,266 @@ body {
   width: 100%;
 }
 
-/* FILTER BUTTONS */
-.controls {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 1000;
-  background: #f5f0e6;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ddd5c4;
-}
-
-.controls button {
-  display: block;
-  margin: 5px 0;
-  padding: 6px 10px;
-  background: #b8924a;
-  color: #1a1714;
-  border: none;
-  cursor: pointer;
-}
-
-.controls button.active {
-  background: #d4aa6a;
-}
-
-/* CLUSTER STYLE */
-.marker-cluster {
-  background: transparent;
-}
-
-.marker-cluster div {
-  background: #b8924a;
-  border: 2px solid #1a1714;
-  color: #1a1714;
-  font-weight: bold;
-  border-radius: 50%;
-}
-
-/* POPUPS */
+/* Popup styling */
 .leaflet-popup-content-wrapper {
   background: #f5f0e6;
+  color: #1a1714;
   border: 1px solid #ddd5c4;
+  border-radius: 8px;
+}
+
+.leaflet-popup-tip {
+  background: #f5f0e6;
+}
+
+.popup-content {
+  font-size: 14px;
 }
 
 .popup-content a {
   color: #b8924a;
+  text-decoration: none;
+}
+
+.popup-content a:hover {
+  color: #d4aa6a;
+}
+
+/* Custom cluster styling */
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large {
+  background: rgba(184,146,74,0.2);
+}
+
+.marker-cluster div {
+  background: #b8924a;
+  color: #1a1714;
+  border: 2px solid #1a1714;
+  font-weight: bold;
 }
 </style>
 </head>
 
 <body>
 
-<div class="controls">
-  <button onclick="toggleCategory('all')" class="active">All</button>
-  <button onclick="toggleCategory('architecture')">Architecture</button>
-  <button onclick="toggleCategory('crime')">Crime</button>
-  <button onclick="toggleCategory('oddities')">Oddities</button>
-</div>
-
 <div id="map"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Marker Cluster JS -->
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script>
 
-const map = L.map('map').setView([51.5096, -0.08227], 12);
+// Create map
+const map = L.map('map', {
+  maxZoom: 18
+}).setView([51.5096, -0.08227], 12);
 
+// Map tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
  attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
 
-// ICON BUILDER (different colours)
-function createIcon(color) {
-  return L.divIcon({
-    html: `
-      <svg width="40" height="56" viewBox="0 0 30 42">
-        <path d="M15 0C7 0 1 6 1 14c0 10 14 28 14 28s14-18 14-28C29 6 23 0 15 0z"
-          fill="${color}"
-          stroke="#1a1714"
-          stroke-width="2"/>
-      </svg>
-    `,
-    iconSize: [40,56],
-    iconAnchor: [20,56]
-  });
-}
-
-const icons = {
-  architecture: createIcon("#b8924a"),
-  crime: createIcon("#7a7268"),
-  oddities: createIcon("#d4aa6a"),
-  general: createIcon("#1a1714")
-};
+// BIG GOLD ICON
+const goldIcon = L.divIcon({
+  className: "",
+  html: `
+    <svg width="40" height="56" viewBox="0 0 30 42">
+      <path d="M15 0C7 0 1 6 1 14c0 10 14 28 14 28s14-18 14-28C29 6 23 0 15 0z"
+        fill="#b8924a"
+        stroke="#1a1714"
+        stroke-width="2"/>
+      <circle cx="15" cy="14" r="5"
+        fill="#faf8f3"
+        stroke="#1a1714"
+        stroke-width="2"/>
+    </svg>
+  `,
+  iconSize: [40, 56],
+  iconAnchor: [20, 56],
+  popupAnchor: [0, -46]
+});
 
 
-// DATA WITH CATEGORIES
+// LOCATIONS (unchanged)
 const locations = [
 
-{ title:"St Dunstan-in-the-East", coords:[51.5096,-0.08227], category:"architecture", article:"https://open.substack.com/pub/tracinglondon/p/st-dunstan-in-the-east-a-timeless-legacy?r=1undwi&utm_medium=ios" },
+{
+  title: "St Dunstan-in-the-East",
+  coords: [51.5096, -0.08227],
+  article: "https://open.substack.com/pub/tracinglondon/p/st-dunstan-in-the-east-a-timeless-legacy?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A bombed-out Wren church transformed into a hidden garden."
+},
 
-{ title:"Tower 42", coords:[51.51532,-0.08443], category:"architecture", article:"https://open.substack.com/pub/tracinglondon/p/tower-42?r=1undwi&utm_medium=ios" },
+{
+  title: "Tower 42",
+  coords: [51.51532, -0.08443],
+  article: "https://open.substack.com/pub/tracinglondon/p/tower-42?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "Once Britain's tallest building, rising from the financial heart of the City."
+},
 
-{ title:"Philpot Lane", coords:[51.51079,-0.08424], category:"oddities", article:"" },
+{
+  title: "Philpot Lane",
+  coords: [51.51079, -0.08424],
+  article: "",
+  video: null,
+  description: "Site of the famous Philpot Lane mice."
+},
 
-{ title:"The Town of Ramsgate Pub", coords:[51.50352,-0.06193], category:"general", article:"https://open.substack.com/pub/tracinglondon/p/the-town-of-ramsgate-pub?r=1undwi&utm_medium=ios" },
+{
+  title: "The Town of Ramsgate Pub",
+  coords: [51.50352, -0.06193],
+  article: "https://open.substack.com/pub/tracinglondon/p/the-town-of-ramsgate-pub?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A riverside pub steeped in smuggling lore and dockside history."
+},
 
-{ title:"The Pissoir of Star Yard", coords:[51.51562,-0.11254], category:"oddities", article:"https://open.substack.com/pub/tracinglondon/p/the-pissoir-of-star-yard?r=1undwi&utm_medium=ios" },
+{
+  title: "The Pissoir of Star Yard",
+  coords: [51.51562, -0.11254],
+  article: "https://open.substack.com/pub/tracinglondon/p/the-pissoir-of-star-yard?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A rare surviving Victorian public urinal hidden in Soho."
+},
 
-{ title:"Handel & Hendrix Museum", coords:[51.51309,-0.14606], category:"architecture", article:"https://open.substack.com/pub/tracinglondon/p/handel-and-hendrix-a-musical-tapestry?r=1undwi&utm_medium=ios" },
+{
+  title: "Handel & Hendrix Museum",
+  coords: [51.51309, -0.14606],
+  article: "https://open.substack.com/pub/tracinglondon/p/handel-and-hendrix-a-musical-tapestry?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "Two musical legends, one historic Mayfair address."
+},
 
-{ title:"The Star Tavern", coords:[51.49841,-0.15562], category:"crime", article:"https://open.substack.com/pub/tracinglondon/p/the-star-tavern?r=1undwi&utm_medium=ios" },
+{
+  title: "The Star Tavern",
+  coords: [51.49841, -0.15562],
+  article: "https://open.substack.com/pub/tracinglondon/p/the-star-tavern?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A historic Belgravia pub tied to espionage and the Great Train Robbery."
+},
 
-{ title:"Findlater's Corner", coords:[51.50615,-0.08823], category:"architecture", article:"https://open.substack.com/pub/tracinglondon/p/findlaters-corner?r=1undwi&utm_medium=ios" },
+{
+  title: "Findlater's Corner",
+  coords: [51.50615, -0.08823],
+  article: "https://open.substack.com/pub/tracinglondon/p/findlaters-corner?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A surviving fragment of Victorian wine merchant grandeur."
+},
 
-{ title:"George Peabody Statue", coords:[51.51399,-0.08663], category:"general", article:"https://open.substack.com/pub/tracinglondon/p/post-1?r=1undwi&utm_medium=ios" },
+{
+  title: "George Peabody Statue",
+  coords: [51.51399, -0.08663],
+  article: "https://open.substack.com/pub/tracinglondon/p/post-1?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A tribute to one of London’s greatest philanthropic figures."
+},
 
-{ title:"Greenwich Foot Tunnel", coords:[51.48321,-0.01004], category:"architecture", article:"https://open.substack.com/pub/tracinglondon/p/the-greenwich-foot-tunnel-a-walk-through-history?r=1undwi&utm_medium=ios" },
+{
+  title: "Greenwich Foot Tunnel",
+  coords: [51.48321, -0.01004],
+  article: "https://open.substack.com/pub/tracinglondon/p/the-greenwich-foot-tunnel-a-walk-through-history?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A historic tunnel beneath the Thames linking Greenwich and the Isle of Dogs."
+},
 
-{ title:"Broadwalk at Canada Water", coords:[51.49762,-0.04953], category:"architecture", article:"https://open.substack.com/pub/tracinglondon/p/londons-newest-bridge?r=1undwi&utm_medium=ios" },
+{
+  title: "Broadwalk at Canada Water",
+  coords: [51.49762, -0.04953],
+  article: "https://open.substack.com/pub/tracinglondon/p/londons-newest-bridge?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A striking new pedestrian bridge in Canada Water’s regeneration."
+},
 
-{ title:"The Hoover Building", coords:[51.53334,-0.31842], category:"architecture", article:"https://open.substack.com/pub/tracinglondon/p/the-hoover-building-londons-art-deco-gem-on-the-a40?r=1undwi&utm_medium=ios" },
+{
+  title: "The Hoover Building",
+  coords: [51.53334, -0.31842],
+  article: "https://open.substack.com/pub/tracinglondon/p/the-hoover-building-londons-art-deco-gem-on-the-a40?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "One of London’s finest Art Deco industrial buildings."
+},
 
-{ title:"Houndsditch", coords:[51.51484,-0.07789], category:"oddities", article:"https://open.substack.com/pub/tracinglondon/p/whats-in-a-name-houndsditch?r=1undwi&utm_medium=ios" },
+{
+  title: "Houndsditch",
+  coords: [51.51484, -0.07789],
+  article: "https://open.substack.com/pub/tracinglondon/p/whats-in-a-name-houndsditch?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A street name rooted in one of London’s grimmer medieval practices."
+},
 
-{ title:"Notting Hill Carnival Northern Route", coords:[51.52642,-0.21523], category:"general", article:"https://open.substack.com/pub/tracinglondon/p/the-history-of-notting-hill-carnival?r=1undwi&utm_medium=ios" },
+{
+  title: "Notting Hill Carnival Northern Route",
+  coords: [51.52642, -0.21523],
+  article: "https://open.substack.com/pub/tracinglondon/p/the-history-of-notting-hill-carnival?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "Part of the route of Europe’s largest street festival."
+},
 
-{ title:"The Ancient House", coords:[51.58454,-0.01167], category:"architecture", article:"https://open.substack.com/pub/tracinglondon/p/the-ancient-house-the-oldest-house-in-london-youve-probably-never-heard-of?r=1undwi&utm_medium=ios" }
+{
+  title: "The Ancient House",
+  coords: [51.58454, -0.01167],
+  article: "https://open.substack.com/pub/tracinglondon/p/the-ancient-house-the-oldest-house-in-london-youve-probably-never-heard-of?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A little-known contender for one of London’s oldest surviving houses."
+}
 
 ];
 
 
-// CLUSTER GROUP
+// CREATE CLUSTER GROUP
 const markers = L.markerClusterGroup();
 
-// STORE MARKERS
-let allMarkers = [];
-
 // ADD MARKERS
+const bounds = [];
+
 locations.forEach(place => {
 
-  let popup = `<strong>${place.title}</strong><br>
-  <a href="${place.article}" target="_blank">Read more</a>`;
+  bounds.push(place.coords);
 
-  const marker = L.marker(place.coords, { icon: icons[place.category] })
-    .bindPopup(popup);
+  let popupContent = `
+    <div class="popup-content">
+      <strong>${place.title}</strong><br>
+      ${place.description}<br><br>
+  `;
 
-  marker.category = place.category;
+  if (place.video) {
+    popupContent += `
+      <iframe width="250" height="140"
+      src="${place.video}"
+      frameborder="0"
+      allowfullscreen></iframe><br>
+    `;
+  } else {
+    popupContent += `<em>Video coming soon</em><br>`;
+  }
+
+  if (place.article) {
+    popupContent += `
+      <br>
+      <a href="${place.article}" target="_blank">
+        Read the full story
+      </a>
+    `;
+  }
+
+  popupContent += `</div>`;
+
+  const marker = L.marker(place.coords, { icon: goldIcon })
+    .bindPopup(popupContent);
 
   markers.addLayer(marker);
-  allMarkers.push(marker);
+
 });
 
+// Add cluster layer
 map.addLayer(markers);
 
-
-// FILTER FUNCTION
-function toggleCategory(cat) {
-
-  markers.clearLayers();
-
-  allMarkers.forEach(marker => {
-    if (cat === "all" || marker.category === cat) {
-      markers.addLayer(marker);
-    }
-  });
-
-  document.querySelectorAll(".controls button").forEach(btn => btn.classList.remove("active"));
-  event.target.classList.add("active");
-}
+// Fit map to all markers
+map.fitBounds(bounds, { padding: [50, 50] });
 
 </script>
 
