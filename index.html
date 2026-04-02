@@ -7,6 +7,13 @@
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
+<!-- Marker Cluster CSS -->
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+
 <style>
 body {
   margin: 0;
@@ -45,6 +52,20 @@ body {
 .popup-content a:hover {
   color: #d4aa6a;
 }
+
+/* Custom cluster styling */
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large {
+  background: rgba(184,146,74,0.2);
+}
+
+.marker-cluster div {
+  background: #b8924a;
+  color: #1a1714;
+  border: 2px solid #1a1714;
+  font-weight: bold;
+}
 </style>
 </head>
 
@@ -54,12 +75,15 @@ body {
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+<!-- Marker Cluster JS -->
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
 <script>
 
-// Create map (no fixed zoom now)
+// Create map
 const map = L.map('map', {
   maxZoom: 18
-}).setView([51.5096, -0.08227], 13);
+}).setView([51.5096, -0.08227], 12);
 
 // Map tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -67,11 +91,11 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 
-// BIGGER GOLD ICON
+// BIG GOLD ICON
 const goldIcon = L.divIcon({
   className: "",
   html: `
-    <svg width="40" height="56" viewBox="0 0 30 42" xmlns="http://www.w3.org/2000/svg">
+    <svg width="40" height="56" viewBox="0 0 30 42">
       <path d="M15 0C7 0 1 6 1 14c0 10 14 28 14 28s14-18 14-28C29 6 23 0 15 0z"
         fill="#b8924a"
         stroke="#1a1714"
@@ -88,7 +112,7 @@ const goldIcon = L.divIcon({
 });
 
 
-// LOCATIONS
+// LOCATIONS (unchanged)
 const locations = [
 
 {
@@ -214,7 +238,10 @@ const locations = [
 ];
 
 
-// FIT MAP TO ALL PINS
+// CREATE CLUSTER GROUP
+const markers = L.markerClusterGroup();
+
+// ADD MARKERS
 const bounds = [];
 
 locations.forEach(place => {
@@ -249,13 +276,17 @@ locations.forEach(place => {
 
   popupContent += `</div>`;
 
-  L.marker(place.coords, { icon: goldIcon })
-    .addTo(map)
+  const marker = L.marker(place.coords, { icon: goldIcon })
     .bindPopup(popupContent);
+
+  markers.addLayer(marker);
 
 });
 
-// Auto zoom to fit all markers nicely
+// Add cluster layer
+map.addLayer(markers);
+
+// Fit map to all markers
 map.fitBounds(bounds, { padding: [50, 50] });
 
 </script>
