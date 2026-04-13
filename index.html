@@ -7,7 +7,6 @@
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
-<!-- Marker Cluster CSS -->
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
 
@@ -28,7 +27,6 @@ body {
   width: 100%;
 }
 
-/* Popup styling */
 .leaflet-popup-content-wrapper {
   background: #f5f0e6;
   color: #1a1714;
@@ -67,7 +65,6 @@ body {
   color: #d4aa6a;
 }
 
-/* Custom cluster styling */
 .custom-cluster {
   background: rgba(184,146,74,0.2);
   border-radius: 50%;
@@ -93,30 +90,27 @@ body {
 <div id="map"></div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<!-- Marker Cluster JS -->
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
 <script>
 
-// Create map
+// MAP
 const map = L.map('map', {
   maxZoom: 18
 }).setView([51.5096, -0.08227], 13);
 
-// Map tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
  attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-// Limit map to London area
+// LIMIT TO LONDON
 const londonBounds = [
   [51.28, -0.5],
   [51.7, 0.3]
 ];
 map.setMaxBounds(londonBounds);
 
-// BIG GOLD ICON
+// GOLD PIN
 const goldIcon = L.divIcon({
   className: "",
   html: `
@@ -152,7 +146,7 @@ const locations = [
   coords: [51.51532, -0.08443],
   article: "https://open.substack.com/pub/tracinglondon/p/tower-42?r=1undwi&utm_medium=ios",
   video: null,
-  description: "Once Britain's tallest building, rising from the financial heart of the City."
+  description: "Once Britain's tallest building."
 },
 
 {
@@ -168,7 +162,7 @@ const locations = [
   coords: [51.50352, -0.06193],
   article: "https://open.substack.com/pub/tracinglondon/p/the-town-of-ramsgate-pub?r=1undwi&utm_medium=ios",
   video: null,
-  description: "A riverside pub steeped in smuggling lore and dockside history."
+  description: "A riverside pub steeped in smuggling lore."
 },
 
 {
@@ -176,7 +170,7 @@ const locations = [
   coords: [51.51562, -0.11254],
   article: "https://open.substack.com/pub/tracinglondon/p/the-pissoir-of-star-yard?r=1undwi&utm_medium=ios",
   video: null,
-  description: "A rare surviving Victorian public urinal hidden in Soho."
+  description: "A rare surviving Victorian public urinal."
 },
 
 {
@@ -184,7 +178,7 @@ const locations = [
   coords: [51.51309, -0.14606],
   article: "https://open.substack.com/pub/tracinglondon/p/handel-and-hendrix-a-musical-tapestry?r=1undwi&utm_medium=ios",
   video: null,
-  description: "Two musical legends, one historic Mayfair address."
+  description: "Two musical legends, one address."
 },
 
 {
@@ -192,7 +186,7 @@ const locations = [
   coords: [51.49841, -0.15562],
   article: "https://open.substack.com/pub/tracinglondon/p/the-star-tavern?r=1undwi&utm_medium=ios",
   video: null,
-  description: "A historic Belgravia pub tied to espionage and the Great Train Robbery."
+  description: "Linked to espionage and the Great Train Robbery."
 },
 
 {
@@ -200,7 +194,7 @@ const locations = [
   coords: [51.50615, -0.08823],
   article: "https://open.substack.com/pub/tracinglondon/p/findlaters-corner?r=1undwi&utm_medium=ios",
   video: null,
-  description: "A surviving fragment of Victorian wine merchant grandeur."
+  description: "Victorian wine merchant grandeur."
 },
 
 {
@@ -208,7 +202,7 @@ const locations = [
   coords: [51.51399, -0.08663],
   article: "https://open.substack.com/pub/tracinglondon/p/post-1?r=1undwi&utm_medium=ios",
   video: null,
-  description: "A tribute to one of London’s greatest philanthropic figures."
+  description: "A tribute to a philanthropic giant."
 },
 
 {
@@ -216,7 +210,7 @@ const locations = [
   coords: [51.48321, -0.01004],
   article: "https://open.substack.com/pub/tracinglondon/p/the-greenwich-foot-tunnel-a-walk-through-history?r=1undwi&utm_medium=ios",
   video: null,
-  description: "A historic tunnel beneath the Thames linking Greenwich and the Isle of Dogs."
+  description: "A tunnel beneath the Thames."
 },
 
 {
@@ -224,7 +218,7 @@ const locations = [
   coords: [51.49762, -0.04953],
   article: "https://open.substack.com/pub/tracinglondon/p/londons-newest-bridge?r=1undwi&utm_medium=ios",
   video: null,
-  description: "A striking new pedestrian bridge in Canada Water’s regeneration."
+  description: "A striking modern bridge."
 },
 
 {
@@ -232,40 +226,74 @@ const locations = [
   coords: [51.53334, -0.31842],
   article: "https://open.substack.com/pub/tracinglondon/p/the-hoover-building-londons-art-deco-gem-on-the-a40?r=1undwi&utm_medium=ios",
   video: null,
-  description: "One of London’s finest Art Deco industrial buildings."
+  description: "Art Deco industrial masterpiece."
 },
 
+// UPDATED HOUNDSDITCH
 {
   title: "Houndsditch",
-  coords: [51.51484, -0.07789],
+  coords: [51.51505, -0.07815],
   article: "https://open.substack.com/pub/tracinglondon/p/whats-in-a-name-houndsditch?r=1undwi&utm_medium=ios",
   video: null,
   description: "A street name rooted in one of London’s grimmer medieval practices."
 },
 
+// NEW ADDITIONS
+
 {
-  title: "Notting Hill Carnival Northern Route",
-  coords: [51.52642, -0.21523],
-  article: "https://open.substack.com/pub/tracinglondon/p/the-history-of-notting-hill-carnival?r=1undwi&utm_medium=ios",
+  title: "Charterhouse Square Plague Pits",
+  coords: [51.52073, -0.09928],
+  article: "https://open.substack.com/pub/tracinglondon/p/the-plague-pits-of-charterhouse-square-unearthing-londons-black-death-past?r=1undwi&utm_medium=ios",
   video: null,
-  description: "Part of the route of Europe’s largest street festival."
+  description: "Mass burial pits from the Black Death beneath a peaceful square."
 },
 
 {
-  title: "The Ancient House",
-  coords: [51.58454, -0.01167],
-  article: "https://open.substack.com/pub/tracinglondon/p/the-ancient-house-the-oldest-house-in-london-youve-probably-never-heard-of?r=1undwi&utm_medium=ios",
+  title: "London Bridge",
+  coords: [51.50933, -0.08711],
+  article: "https://open.substack.com/pub/tracinglondon/p/london-bridge-a-definitive-history?r=1undwi&utm_medium=ios",
   video: null,
-  description: "A little-known contender for one of London’s oldest surviving houses."
+  description: "A crossing with nearly 2,000 years of history."
+},
+
+{
+  title: "Underground Roman Wall",
+  coords: [51.51744, -0.08967],
+  article: "https://open.substack.com/pub/tracinglondon/p/the-car-park-that-preserved-a-roman?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A hidden section of London’s Roman wall beneath the streets."
+},
+
+{
+  title: "London's Last Methane Lamp",
+  coords: [51.50988, -0.12071],
+  article: "https://open.substack.com/pub/tracinglondon/p/lit-by-londons-fumes-the-story-of?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A lamp powered by sewer gas, still burning."
+},
+
+{
+  title: "Aldwych",
+  coords: [51.51315, -0.11765],
+  article: "https://open.substack.com/pub/tracinglondon/p/the-aldwych-londons-crescent-of-secrets?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A grand crescent built over lost streets and buried history."
+},
+
+{
+  title: "The Cruel Mistress of Fetter Lane",
+  coords: [51.51579, -0.10913],
+  article: "https://open.substack.com/pub/tracinglondon/p/the-cruel-mistress-of-fetter-lane?r=1undwi&utm_medium=ios",
+  video: null,
+  description: "A dark tale of cruelty hidden in a quiet London street."
 }
 
 ];
 
-// CREATE CLUSTER GROUP WITH CUSTOM ICONS
+// CLUSTERS
 const markers = L.markerClusterGroup({
   iconCreateFunction: function(cluster) {
     const count = cluster.getChildCount();
-
     return L.divIcon({
       html: `<div>${count}+</div>`,
       className: 'custom-cluster',
@@ -287,24 +315,12 @@ locations.forEach(place => {
       ${place.description}<br><br>
   `;
 
-  if (place.video) {
-    popupContent += `
-      <iframe width="250" height="140"
-      src="${place.video}"
-      frameborder="0"
-      allowfullscreen></iframe><br>
-    `;
-  } else {
-    popupContent += `<em>Video coming soon</em><br>`;
-  }
+  popupContent += place.video
+    ? `<iframe width="250" height="140" src="${place.video}" frameborder="0" allowfullscreen></iframe><br>`
+    : `<em>Video coming soon</em><br>`;
 
   if (place.article && place.article.trim() !== "") {
-    popupContent += `
-      <br>
-      <a href="${place.article}" target="_blank">
-        Read the full story
-      </a>
-    `;
+    popupContent += `<br><a href="${place.article}" target="_blank">Read the full story</a>`;
   }
 
   popupContent += `</div>`;
@@ -312,7 +328,6 @@ locations.forEach(place => {
   const marker = L.marker(place.coords, { icon: goldIcon })
     .bindPopup(popupContent);
 
-  // Zoom in on click
   marker.on('click', function() {
     map.setView(place.coords, 16, { animate: true });
   });
@@ -321,10 +336,10 @@ locations.forEach(place => {
 
 });
 
-// Add cluster layer
+// ADD TO MAP
 map.addLayer(markers);
 
-// Fit map to all markers nicely
+// FIT VIEW
 map.fitBounds(bounds, {
   padding: [30, 30],
   maxZoom: 15
