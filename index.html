@@ -95,22 +95,20 @@ body {
 <script>
 
 // MAP
-const map = L.map('map', {
-  maxZoom: 18
-}).setView([51.5096, -0.08227], 13);
+const map = L.map('map', { maxZoom: 18 })
+  .setView([51.5096, -0.08227], 13);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
  attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
 // LIMIT TO LONDON
-const londonBounds = [
+map.setMaxBounds([
   [51.28, -0.5],
   [51.7, 0.3]
-];
-map.setMaxBounds(londonBounds);
+]);
 
-// GOLD PIN
+// ICON
 const goldIcon = L.divIcon({
   className: "",
   html: `
@@ -130,176 +128,92 @@ const goldIcon = L.divIcon({
   popupAnchor: [0, -46]
 });
 
-// LOCATIONS
+// LOCATIONS WITH IDs
 const locations = [
 
-{
-  title: "St Dunstan-in-the-East",
-  coords: [51.5096, -0.08227],
-  article: "https://open.substack.com/pub/tracinglondon/p/st-dunstan-in-the-east-a-timeless-legacy?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "A bombed-out Wren church transformed into a hidden garden."
-},
+{ id:"st-dunstan", title:"St Dunstan-in-the-East", coords:[51.5096,-0.08227],
+article:"https://open.substack.com/pub/tracinglondon/p/st-dunstan-in-the-east-a-timeless-legacy?r=1undwi&utm_medium=ios",
+video:null, description:"A bombed-out Wren church turned garden." },
 
-{
-  title: "Tower 42",
-  coords: [51.51532, -0.08443],
-  article: "https://open.substack.com/pub/tracinglondon/p/tower-42?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "Once Britain's tallest building."
-},
+{ id:"tower-42", title:"Tower 42", coords:[51.51532,-0.08443],
+article:"https://open.substack.com/pub/tracinglondon/p/tower-42?r=1undwi&utm_medium=ios",
+video:null, description:"Once Britain’s tallest building." },
 
-{
-  title: "Philpot Lane",
-  coords: [51.51079, -0.08424],
-  article: "",
-  video: null,
-  description: "Site of the famous Philpot Lane mice."
-},
+{ id:"philpot-lane", title:"Philpot Lane", coords:[51.51079,-0.08424],
+article:"", video:null, description:"Site of the famous mice." },
 
-{
-  title: "The Town of Ramsgate Pub",
-  coords: [51.50352, -0.06193],
-  article: "https://open.substack.com/pub/tracinglondon/p/the-town-of-ramsgate-pub?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "A riverside pub steeped in smuggling lore."
-},
+{ id:"ramsgate-pub", title:"Town of Ramsgate", coords:[51.50352,-0.06193],
+article:"https://open.substack.com/pub/tracinglondon/p/the-town-of-ramsgate-pub?r=1undwi&utm_medium=ios",
+video:null, description:"Smuggling lore by the Thames." },
 
-{
-  title: "The Pissoir of Star Yard",
-  coords: [51.51562, -0.11254],
-  article: "https://open.substack.com/pub/tracinglondon/p/the-pissoir-of-star-yard?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "A rare surviving Victorian public urinal."
-},
+{ id:"star-yard", title:"Star Yard Pissoir", coords:[51.51562,-0.11254],
+article:"https://open.substack.com/pub/tracinglondon/p/the-pissoir-of-star-yard?r=1undwi&utm_medium=ios",
+video:null, description:"Victorian public urinal." },
 
-{
-  title: "Handel & Hendrix Museum",
-  coords: [51.51309, -0.14606],
-  article: "https://open.substack.com/pub/tracinglondon/p/handel-and-hendrix-a-musical-tapestry?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "Two musical legends, one address."
-},
+{ id:"hendrix", title:"Handel & Hendrix", coords:[51.51309,-0.14606],
+article:"https://open.substack.com/pub/tracinglondon/p/handel-and-hendrix-a-musical-tapestry?r=1undwi&utm_medium=ios",
+video:null, description:"Two legends, one house." },
 
-{
-  title: "The Star Tavern",
-  coords: [51.49841, -0.15562],
-  article: "https://open.substack.com/pub/tracinglondon/p/the-star-tavern?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "Linked to espionage and the Great Train Robbery."
-},
+{ id:"star-tavern", title:"Star Tavern", coords:[51.49841,-0.15562],
+article:"https://open.substack.com/pub/tracinglondon/p/the-star-tavern?r=1undwi&utm_medium=ios",
+video:null, description:"Espionage & robbery links." },
 
-{
-  title: "Findlater's Corner",
-  coords: [51.50615, -0.08823],
-  article: "https://open.substack.com/pub/tracinglondon/p/findlaters-corner?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "Victorian wine merchant grandeur."
-},
+{ id:"findlaters", title:"Findlater's Corner", coords:[51.50615,-0.08823],
+article:"https://open.substack.com/pub/tracinglondon/p/findlaters-corner?r=1undwi&utm_medium=ios",
+video:null, description:"Victorian wine merchant." },
 
-{
-  title: "George Peabody Statue",
-  coords: [51.51399, -0.08663],
-  article: "https://open.substack.com/pub/tracinglondon/p/post-1?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "A tribute to a philanthropic giant."
-},
+{ id:"peabody", title:"George Peabody", coords:[51.51399,-0.08663],
+article:"https://open.substack.com/pub/tracinglondon/p/post-1?r=1undwi&utm_medium=ios",
+video:null, description:"Philanthropic giant." },
 
-{
-  title: "Greenwich Foot Tunnel",
-  coords: [51.48321, -0.01004],
-  article: "https://open.substack.com/pub/tracinglondon/p/the-greenwich-foot-tunnel-a-walk-through-history?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "A tunnel beneath the Thames."
-},
+{ id:"greenwich-tunnel", title:"Greenwich Foot Tunnel", coords:[51.48321,-0.01004],
+article:"https://open.substack.com/pub/tracinglondon/p/the-greenwich-foot-tunnel-a-walk-through-history?r=1undwi&utm_medium=ios",
+video:null, description:"Tunnel under the Thames." },
 
-{
-  title: "Broadwalk at Canada Water",
-  coords: [51.49762, -0.04953],
-  article: "https://open.substack.com/pub/tracinglondon/p/londons-newest-bridge?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "A striking modern bridge."
-},
+{ id:"hoover", title:"Hoover Building", coords:[51.53334,-0.31842],
+article:"https://open.substack.com/pub/tracinglondon/p/the-hoover-building-londons-art-deco-gem-on-the-a40?r=1undwi&utm_medium=ios",
+video:null, description:"Art Deco masterpiece." },
 
-{
-  title: "The Hoover Building",
-  coords: [51.53334, -0.31842],
-  article: "https://open.substack.com/pub/tracinglondon/p/the-hoover-building-londons-art-deco-gem-on-the-a40?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "Art Deco industrial masterpiece."
-},
+{ id:"houndsditch", title:"Houndsditch", coords:[51.51505,-0.07815],
+article:"https://open.substack.com/pub/tracinglondon/p/whats-in-a-name-houndsditch?r=1undwi&utm_medium=ios",
+video:null, description:"Grim medieval origins." },
 
-// UPDATED HOUNDSDITCH
-{
-  title: "Houndsditch",
-  coords: [51.51505, -0.07815],
-  article: "https://open.substack.com/pub/tracinglondon/p/whats-in-a-name-houndsditch?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "A street name rooted in one of London’s grimmer medieval practices."
-},
+{ id:"plague-pits", title:"Charterhouse Plague Pits", coords:[51.52073,-0.09928],
+article:"https://open.substack.com/pub/tracinglondon/p/the-plague-pits-of-charterhouse-square-unearthing-londons-black-death-past?r=1undwi&utm_medium=ios",
+video:null, description:"Black Death burial site." },
 
-// NEW ADDITIONS
+{ id:"london-bridge", title:"London Bridge", coords:[51.50933,-0.08711],
+article:"https://open.substack.com/pub/tracinglondon/p/london-bridge-a-definitive-history?r=1undwi&utm_medium=ios",
+video:null, description:"2,000 years of crossings." },
 
-{
-  title: "Charterhouse Square Plague Pits",
-  coords: [51.52073, -0.09928],
-  article: "https://open.substack.com/pub/tracinglondon/p/the-plague-pits-of-charterhouse-square-unearthing-londons-black-death-past?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "Mass burial pits from the Black Death beneath a peaceful square."
-},
+{ id:"roman-wall", title:"Roman Wall", coords:[51.51744,-0.08967],
+article:"https://open.substack.com/pub/tracinglondon/p/the-car-park-that-preserved-a-roman?r=1undwi&utm_medium=ios",
+video:null, description:"Hidden Roman remains." },
 
-{
-  title: "London Bridge",
-  coords: [51.50933, -0.08711],
-  article: "https://open.substack.com/pub/tracinglondon/p/london-bridge-a-definitive-history?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "A crossing with nearly 2,000 years of history."
-},
+{ id:"methane-lamp", title:"Methane Lamp", coords:[51.50988,-0.12071],
+article:"https://open.substack.com/pub/tracinglondon/p/lit-by-londons-fumes-the-story-of?r=1undwi&utm_medium=ios",
+video:null, description:"Lamp powered by sewer gas." },
 
-{
-  title: "Underground Roman Wall",
-  coords: [51.51744, -0.08967],
-  article: "https://open.substack.com/pub/tracinglondon/p/the-car-park-that-preserved-a-roman?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "A hidden section of London’s Roman wall beneath the streets."
-},
+{ id:"aldwych", title:"Aldwych", coords:[51.51315,-0.11765],
+article:"https://open.substack.com/pub/tracinglondon/p/the-aldwych-londons-crescent-of-secrets?r=1undwi&utm_medium=ios",
+video:null, description:"Built over lost streets." },
 
-{
-  title: "London's Last Methane Lamp",
-  coords: [51.50988, -0.12071],
-  article: "https://open.substack.com/pub/tracinglondon/p/lit-by-londons-fumes-the-story-of?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "A lamp powered by sewer gas, still burning."
-},
-
-{
-  title: "Aldwych",
-  coords: [51.51315, -0.11765],
-  article: "https://open.substack.com/pub/tracinglondon/p/the-aldwych-londons-crescent-of-secrets?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "A grand crescent built over lost streets and buried history."
-},
-
-{
-  title: "The Cruel Mistress of Fetter Lane",
-  coords: [51.51579, -0.10913],
-  article: "https://open.substack.com/pub/tracinglondon/p/the-cruel-mistress-of-fetter-lane?r=1undwi&utm_medium=ios",
-  video: null,
-  description: "A dark tale of cruelty hidden in a quiet London street."
-}
+{ id:"fetter-lane", title:"Fetter Lane Mystery", coords:[51.51579,-0.10913],
+article:"https://open.substack.com/pub/tracinglondon/p/the-cruel-mistress-of-fetter-lane?r=1undwi&utm_medium=ios",
+video:null, description:"A dark London tale." }
 
 ];
 
-// CLUSTERS
+// STORE MARKERS
+const markerMap = {};
+
+// CLUSTER
 const markers = L.markerClusterGroup({
-  iconCreateFunction: function(cluster) {
-    const count = cluster.getChildCount();
-    return L.divIcon({
-      html: `<div>${count}+</div>`,
-      className: 'custom-cluster',
-      iconSize: [40, 40]
-    });
-  }
+  iconCreateFunction: c => L.divIcon({
+    html: `<div>${c.getChildCount()}+</div>`,
+    className: 'custom-cluster',
+    iconSize: [40,40]
+  })
 });
 
 // ADD MARKERS
@@ -309,41 +223,45 @@ locations.forEach(place => {
 
   bounds.push(place.coords);
 
-  let popupContent = `
+  let popup = `
     <div class="popup-content">
-      <strong>${place.title}</strong><br>
-      ${place.description}<br><br>
+    <strong>${place.title}</strong><br>
+    ${place.description}<br><br>
+    ${place.video ? `<iframe width="250" height="140" src="${place.video}"></iframe>` : `<em>Video coming soon</em>`}
   `;
 
-  popupContent += place.video
-    ? `<iframe width="250" height="140" src="${place.video}" frameborder="0" allowfullscreen></iframe><br>`
-    : `<em>Video coming soon</em><br>`;
-
-  if (place.article && place.article.trim() !== "") {
-    popupContent += `<br><a href="${place.article}" target="_blank">Read the full story</a>`;
+  if(place.article){
+    popup += `<br><a href="${place.article}" target="_blank">Read the full story</a>`;
   }
 
-  popupContent += `</div>`;
+  popup += `</div>`;
 
-  const marker = L.marker(place.coords, { icon: goldIcon })
-    .bindPopup(popupContent);
+  const marker = L.marker(place.coords,{icon:goldIcon})
+    .bindPopup(popup);
 
-  marker.on('click', function() {
-    map.setView(place.coords, 16, { animate: true });
+  marker.on('click', () => {
+    map.setView(place.coords,16,{animate:true});
   });
 
+  markerMap[place.id] = marker;
   markers.addLayer(marker);
-
 });
 
-// ADD TO MAP
 map.addLayer(markers);
 
-// FIT VIEW
-map.fitBounds(bounds, {
-  padding: [30, 30],
-  maxZoom: 15
-});
+map.fitBounds(bounds,{padding:[30,30],maxZoom:15});
+
+// DEEP LINKING
+const params = new URLSearchParams(window.location.search);
+const target = params.get('location');
+
+if(target && markerMap[target]){
+  setTimeout(()=>{
+    const marker = markerMap[target];
+    map.setView(marker.getLatLng(),16);
+    marker.openPopup();
+  },500);
+}
 
 </script>
 
