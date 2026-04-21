@@ -128,7 +128,7 @@ const goldIcon = L.divIcon({
   popupAnchor: [0, -46]
 });
 
-// LOCATIONS WITH IDs
+// LOCATIONS
 const locations = [
 
 { id:"st-dunstan", title:"St Dunstan-in-the-East", coords:[51.5096,-0.08227],
@@ -178,6 +178,10 @@ video:null, description:"Art Deco masterpiece." },
 article:"https://open.substack.com/pub/tracinglondon/p/whats-in-a-name-houndsditch?r=1undwi&utm_medium=ios",
 video:null, description:"Grim medieval origins." },
 
+{ id:"seething-lane", title:"Seething Lane", coords:[51.51050,-0.07921],
+article:"https://open.substack.com/pub/tracinglondon/p/whats-in-a-name-seething-lane?r=1undwi&utm_medium=ios",
+video:null, description:"A street name with a curious and possibly chaotic past." },
+
 { id:"plague-pits", title:"Charterhouse Plague Pits", coords:[51.52073,-0.09928],
 article:"https://open.substack.com/pub/tracinglondon/p/the-plague-pits-of-charterhouse-square-unearthing-londons-black-death-past?r=1undwi&utm_medium=ios",
 video:null, description:"Black Death burial site." },
@@ -204,19 +208,16 @@ video:null, description:"A dark London tale." }
 
 ];
 
-// STORE MARKERS
+// MARKERS + CLUSTERS
 const markerMap = {};
-
-// CLUSTER
 const markers = L.markerClusterGroup({
   iconCreateFunction: c => L.divIcon({
-    html: `<div>${c.getChildCount()}+</div>`,
-    className: 'custom-cluster',
-    iconSize: [40,40]
+    html:`<div>${c.getChildCount()}+</div>`,
+    className:'custom-cluster',
+    iconSize:[40,40]
   })
 });
 
-// ADD MARKERS
 const bounds = [];
 
 locations.forEach(place => {
@@ -236,8 +237,7 @@ locations.forEach(place => {
 
   popup += `</div>`;
 
-  const marker = L.marker(place.coords,{icon:goldIcon})
-    .bindPopup(popup);
+  const marker = L.marker(place.coords,{icon:goldIcon}).bindPopup(popup);
 
   marker.on('click', () => {
     map.setView(place.coords,16,{animate:true});
@@ -251,7 +251,7 @@ map.addLayer(markers);
 
 map.fitBounds(bounds,{padding:[30,30],maxZoom:15});
 
-// DEEP LINKING
+// DEEP LINK
 const params = new URLSearchParams(window.location.search);
 const target = params.get('location');
 
